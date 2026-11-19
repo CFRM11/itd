@@ -13,14 +13,4 @@ module.exports = {
       { slug: 'inventario', corto: 'Inventario', titulo: 'Inventario', descripcion: 'Productos y existencias.' },
     ],
   },
-  cliente: {
-    titulo: 'Cliente',
-    base: '/cliente',
-    tipo: 'cliente',
-    paginas: [
-      { slug: 'compras', corto: 'Compras', titulo: 'Mis compras', descripcion: 'Historial de compras.' },
-      { slug: 'reembolsos', corto: 'Reembolsos', titulo: 'Mis reembolsos', descripcion: 'Solicitudes y estado de reembolsos.' },
-      { slug: 'cuenta', corto: 'Cuenta', titulo: 'Mi cuenta', descripcion: 'Datos de acceso y preferencias.' },
-    ],
-  },
 };

@@ -3,7 +3,6 @@
   const esRegistro = modo === 'registro';
   const esVendedor = tipo === 'vendedor';
   const etiqueta = esVendedor ? 'Vendedor' : 'Cliente';
-  const otro = esVendedor ? 'cliente' : 'vendedor';
   const invalido = (campo) => (errors[campo] ? ' aria-invalid="true"' : '');
 %>
 
@@ -57,7 +56,6 @@
       ¿No tienes cuenta? <a href="/registro/<%= tipo %><%= next ? '?next=' + encodeURIComponent(next) : '' %>">Regístrate</a>
     <% } %>
   </p>
-  <p><a href="/<%= modo %>/<%= otro %>">¿Eres <%= esVendedor ? 'cliente' : 'vendedor' %>? Entrar como <%= esVendedor ? 'cliente' : 'vendedor' %></a></p>
 </div>
 
 <%- include('../partials/footer') %>
