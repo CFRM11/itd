@@ -2,7 +2,7 @@
 <% if (inv.error) { %><p role="alert"><%= inv.error %></p><% } %>
 
 <% if (!inv.items.length && !inv.error) { %>
-  <p>Aún no tienes artículos. Usa el botón <strong>Agregar</strong> de abajo o toma una foto en la pestaña Cámara.</p>
+  <p>Aún no tienes artículos. Usa <strong>Por foto</strong> para contar varios productos de una vez, o <strong>Agregar</strong> para uno.</p>
 <% } %>
 
 <ul class="cards" role="list">
@@ -18,6 +18,7 @@
         <h2 class="card-titulo"><%= it.nombre %></h2>
         <p class="card-meta">
           <span class="badge"><%= it.tipo === 'producto' ? 'Producto' : 'Servicio' %></span>
+          <span class="badge">× <%= it.cantidad ?? 1 %></span>
           <strong>$<%= Number(it.precio).toFixed(2) %></strong>
         </p>
         <% if (it.descripcion) { %><p class="card-desc"><%= it.descripcion %></p><% } %>
@@ -42,7 +43,10 @@
   <% }) %>
 </ul>
 
-<button type="button" class="agregar-fijo" data-abrir="dlg-nuevo">+ Agregar</button>
+<div class="barra-fija">
+  <button type="button" class="outline" data-abrir="dlg-foto">📷 Por foto</button>
+  <button type="button" data-abrir="dlg-nuevo">+ Agregar</button>
+</div>
 
 <dialog id="dlg-nuevo" class="hoja" <%- inv.abrirNuevo ? 'data-abrir-auto' : '' %>>
   <header class="hoja-cabecera">
@@ -51,3 +55,41 @@
   </header>
   <%- include('inventario-form', { item: null, prefill: inv.prefill, accion: '/vendedor/inventario' }) %>
 </dialog>
+
+<!-- Alta por foto: la cámara toma la foto, Gemini enumera los productos y se abre la revisión -->
+<dialog id="dlg-foto" class="hoja">
+  <header class="hoja-cabecera">
+    <h2>Agregar por foto</h2>
+    <button type="button" class="outline secondary" data-cerrar>Cerrar</button>
+  </header>
+  <section class="camara" data-camara data-modo="inventariar">
+    <p>Pon los productos a la vista y toma la foto. Gemini contará cada tipo de producto.</p>
+    <div class="visor">
+      <video data-video autoplay playsinline muted aria-label="Cámara para contar productos"></video>
+      <p data-estado class="visor-estado" role="status">Abre la cámara para comenzar.</p>
+    </div>
+    <canvas data-canvas hidden></canvas>
+    <div class="camara-botones">
+      <button type="button" class="outline" data-activar hidden>Activar cámara</button>
+      <button type="button" data-tomar disabled>Tomar foto</button>
+    </div>
+    <p data-error role="alert" hidden></p>
+  </section>
+</dialog>
+
+<!-- Revisión editable de los productos encontrados (la llena revision.js) -->
+<dialog id="dlg-revision" class="hoja hoja-ancha">
+  <header class="hoja-cabecera">
+    <h2>Revisa los artículos</h2>
+    <button type="button" class="outline secondary" data-cerrar>Cerrar</button>
+  </header>
+  <p data-rev-mensaje></p>
+  <div data-rev-filas class="rev-filas"></div>
+  <div class="rev-acciones">
+    <button type="button" class="outline" data-rev-agregar>+ Agregar fila</button>
+    <button type="button" data-rev-guardar>Guardar artículos</button>
+  </div>
+  <p data-rev-error role="alert" hidden></p>
+</dialog>
+
+<script src="/public/js/revision.js" defer></script>
