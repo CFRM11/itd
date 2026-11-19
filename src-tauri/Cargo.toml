@@ -1,12 +1,12 @@
 [package]
-name = "itd"
+name = "snapcart"
 version = "0.1.0"
-description = "ITD — frontend web empaquetado con Tauri"
+description = "snapCart — frontend web empaquetado con Tauri"
 edition = "2021"
 
 [lib]
 # Nombre distinto del binario para evitar conflictos en Windows (y requerido para móvil).
-name = "itd_lib"
+name = "snapcart_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]

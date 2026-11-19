@@ -1,23 +1,25 @@
 {
-  "name": "itd",
+  "name": "snapcart",
   "version": "0.1.0",
   "private": true,
   "description": "Frontend estático (HTML + <template> + fetch, CSS mobile-first sin clases) desacoplado de una API Express; empaquetado con Tauri",
   "scripts": {
     "postinstall": "node scripts/vendor.mjs",
     "dev": "node scripts/dev.mjs",
-    "dev:api": "node --watch-path=server server/index.js",
+    "dev:api": "node --env-file-if-exists=.env --watch-path=server server/index.js",
     "dev:web": "node scripts/serve-web.mjs",
-    "start:api": "node server/index.js",
+    "start:api": "node --env-file-if-exists=.env server/index.js",
     "tauri": "tauri",
     "tauri:dev": "tauri dev",
     "tauri:build": "tauri build",
     "tauri:icon": "tauri icon app-icon.svg",
-    "start": "node server/index.js",
-    "dev:server": "node --watch-path=server server/index.js"
+    "start": "node --env-file-if-exists=.env server/index.js",
+    "dev:server": "node --env-file-if-exists=.env --watch-path=server server/index.js",
+    "test": "node --test \"server/test/**/*.test.js\""
   },
   "dependencies": {
     "@picocss/pico": "^2.1.1",
+    "@supabase/supabase-js": "2.119.0",
     "ejs": "^3.1.10",
     "express": "^5.1.0"
   },

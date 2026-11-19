@@ -1,32 +1,144 @@
-/* Ajustes propios sobre Pico CSS */
-.stat {
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin: 0;
+/* Layout tipo app sobre Pico CSS:
+   barra superior fija · contenido · barra de navegación inferior fija */
+:root {
+  --topbar-h: 3.25rem;
+  --bottomnav-h: 3.5rem;
+  --line: var(--pico-muted-border-color);
 }
 
-.page-head {
+html, body { height: 100%; }
+
+body.app {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  height: 100dvh;
+  margin: 0;
+  overflow: hidden;
+}
+
+/* ---------- Barra superior ---------- */
+.topbar {
+  flex: none;
+  display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: var(--pico-spacing);
+  height: calc(var(--topbar-h) + env(safe-area-inset-top));
+  padding: env(safe-area-inset-top) 1rem 0;
+  border-bottom: 1px solid var(--line);
+  background: var(--pico-background-color);
 }
-.page-head hgroup { margin: 0; }
-
-.grid-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
-  gap: var(--pico-grid-column-gap);
-}
-.grid-cards article { margin: 0; }
-
-.aviso {
-  padding: 0.75rem 1rem;
-  border-radius: var(--pico-border-radius);
-  background: var(--pico-ins-color);
-  color: #fff;
+.brand {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  text-decoration: none;
+  color: var(--pico-color);
 }
 
-form[role="search"] { margin-bottom: calc(var(--pico-spacing) * 1.5); }
+.topbar .sesion {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+.topbar .sesion form { margin: 0; }
+.topbar .sesion button { width: auto; margin: 0; padding: 0.35rem 0.75rem; font-size: 0.9rem; }
+.topbar .sesion a { text-decoration: none; }
+.sesion-nombre {
+  max-width: 9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---------- Contenido ---------- */
+main.main-page,
+main.main-swipe {
+  flex: 1;
+  min-height: 0;
+  padding: 0;
+}
+main.main-page { overflow-y: auto; }
+main.main-swipe { display: flex; flex-direction: column; overflow: hidden; }
+
+.page,
+.panel-inner {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+/* ---------- Pestañas de la sección ---------- */
+.tabs {
+  flex: none;
+  position: relative;
+  display: flex;
+  border-bottom: 1px solid var(--line);
+}
+.tabs a {
+  flex: 1;
+  min-width: 0;
+  padding: 0.7rem 0.25rem;
+  text-align: center;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-decoration: none;
+  color: var(--pico-muted-color);
+}
+.tabs a[aria-current="page"] { color: var(--pico-color); font-weight: 600; }
+.tabs-indicator {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: calc(100% / var(--n));
+  height: 2px;
+  background: var(--pico-color);
+  will-change: transform;
+}
+
+/* ---------- Paneles deslizables (solo dentro de la sección) ---------- */
+.swipe {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain; /* el gesto no "se escapa" a otra página */
+  scrollbar-width: none;
+}
+.swipe::-webkit-scrollbar { display: none; }
+.panel {
+  flex: 0 0 100%;
+  overflow-y: auto;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+/* ---------- Barra de navegación inferior ---------- */
+.bottomnav {
+  flex: none;
+  display: flex;
+  justify-content: center;
+  height: calc(var(--bottomnav-h) + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
+  border-top: 1px solid var(--line);
+  background: var(--pico-background-color);
+}
+.bottomnav a {
+  flex: 1;
+  max-width: 9rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  font-size: 0.7rem;
+  text-decoration: none;
+  color: var(--pico-muted-color);
+}
+.bottomnav svg { width: 1.6rem; height: 1.6rem; }
+.bottomnav a[aria-current="page"] { color: var(--pico-color); font-weight: 600; }
+.bottomnav a[aria-current="page"] svg { stroke-width: 2.4; }

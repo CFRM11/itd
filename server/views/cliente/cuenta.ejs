@@ -1,0 +1,11 @@
+<article>
+  <dl>
+    <dt>Nombre</dt>
+    <dd><%= sesion.nombre %></dd>
+    <dt>Correo</dt>
+    <dd><%= sesion.email %></dd>
+  </dl>
+  <form method="post" action="/salir">
+    <button type="submit" class="secondary">Cerrar sesión</button>
+  </form>
+</article>

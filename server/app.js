@@ -20,8 +20,8 @@ app.disable('x-powered-by');
 // ---------- Motor de plantillas EJS ----------
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-app.locals.siteName = 'ITD';
-app.locals.money = (n) => Number(n).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
+app.locals.siteName = 'snapCart';
+app.locals.secciones = require('./routes/secciones');
 
 // ---------- Archivos estáticos ----------
 // Pico CSS servido directamente desde node_modules
@@ -46,8 +46,10 @@ app.use((req, res, next) => {
 app.use(express.json({ limit: '100kb' }));
 app.use(express.urlencoded({ extended: false, limit: '100kb' }));
 
+app.use(require('./auth/sesion').cargarSesion);
+
 app.use('/api', require('./api'));
-app.use('/', require('./pages'));
+app.use('/', require('./routes'));
 
 const isApi = (req) => req.path.startsWith('/api');
 

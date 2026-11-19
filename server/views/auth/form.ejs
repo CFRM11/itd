@@ -1,0 +1,63 @@
+<%- include('../partials/head') %>
+<%
+  const esRegistro = modo === 'registro';
+  const esVendedor = tipo === 'vendedor';
+  const etiqueta = esVendedor ? 'Vendedor' : 'Cliente';
+  const otro = esVendedor ? 'cliente' : 'vendedor';
+  const invalido = (campo) => (errors[campo] ? ' aria-invalid="true"' : '');
+%>
+
+<div class="page">
+  <hgroup>
+    <h1><%= esRegistro ? 'Crear cuenta' : 'Iniciar sesión' %></h1>
+    <p><%= etiqueta %></p>
+  </hgroup>
+
+  <% if (aviso) { %><p role="status"><%= aviso %></p><% } %>
+  <% if (general) { %><p role="alert"><%= general %></p><% } %>
+
+  <form method="post" action="/<%= modo %>/<%= tipo %>" novalidate>
+    <input type="hidden" name="next" value="<%= next %>">
+
+    <% if (esRegistro) { %>
+      <label>
+        <%= esVendedor ? 'Razón social' : 'Nombre' %>
+        <input name="nombre" value="<%= values.nombre || '' %>" autocomplete="<%= esVendedor ? 'organization' : 'name' %>"<%- invalido('nombre') %>>
+        <% if (errors.nombre) { %><small><%= errors.nombre %></small><% } %>
+      </label>
+
+      <% if (esVendedor) { %>
+        <label>
+          RFC
+          <input name="rfc" value="<%= values.rfc || '' %>" autocapitalize="characters" autocomplete="off"<%- invalido('rfc') %>>
+          <% if (errors.rfc) { %><small><%= errors.rfc %></small><% } %>
+        </label>
+      <% } %>
+    <% } %>
+
+    <label>
+      Correo
+      <input type="email" name="email" value="<%= values.email || '' %>" autocomplete="email"<%- invalido('email') %>>
+      <% if (errors.email) { %><small><%= errors.email %></small><% } %>
+    </label>
+
+    <label>
+      Contraseña
+      <input type="password" name="password" autocomplete="<%= esRegistro ? 'new-password' : 'current-password' %>"<%- invalido('password') %>>
+      <% if (errors.password) { %><small><%= errors.password %></small><% } %>
+    </label>
+
+    <button type="submit"><%= esRegistro ? 'Crear cuenta' : 'Entrar' %></button>
+  </form>
+
+  <p>
+    <% if (esRegistro) { %>
+      ¿Ya tienes cuenta? <a href="/ingresar/<%= tipo %><%= next ? '?next=' + encodeURIComponent(next) : '' %>">Inicia sesión</a>
+    <% } else { %>
+      ¿No tienes cuenta? <a href="/registro/<%= tipo %><%= next ? '?next=' + encodeURIComponent(next) : '' %>">Regístrate</a>
+    <% } %>
+  </p>
+  <p><a href="/<%= modo %>/<%= otro %>">¿Eres <%= esVendedor ? 'cliente' : 'vendedor' %>? Entrar como <%= esVendedor ? 'cliente' : 'vendedor' %></a></p>
+</div>
+
+<%- include('../partials/footer') %>

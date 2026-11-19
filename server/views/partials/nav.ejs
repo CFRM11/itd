@@ -1,12 +1,19 @@
-<header class="container">
-  <nav>
-    <ul>
-      <li><a href="/" class="contrast"><strong><%= siteName %></strong></a></li>
-    </ul>
-    <ul>
-      <li><a href="/" <%- active === 'inicio' ? 'aria-current="page"' : '' %>>Inicio</a></li>
-      <li><a href="/alumnos" <%- active === 'alumnos' ? 'aria-current="page"' : '' %>>Alumnos</a></li>
-      <li><a href="/vendedor" <%- active === 'vendedor' ? 'aria-current="page"' : '' %>>Vendedores</a></li>
-    </ul>
-  </nav>
-</header>
+<%
+  // Barra inferior: solo enlaces (se cambia de sección tocando, nunca deslizando).
+  const iconos = {
+    inicio: '<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/>',
+    vendedor: '<path d="M4 21V5a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v16"/><path d="M15 10h4a1 1 0 0 1 1 1v10"/><path d="M2 21h20M8 8h3M8 12h3M8 16h3"/>',
+    cliente: '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+  };
+  const items = [{ key: 'inicio', href: '/', titulo: 'Inicio' }]
+    .concat(Object.entries(secciones).map(([key, s]) => ({ key, href: s.base, titulo: s.titulo })));
+%>
+<nav class="bottomnav" aria-label="Principal">
+  <% items.forEach((it) => { %>
+    <a href="<%= it.href %>" <%- active === it.key ? 'aria-current="page"' : '' %>>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><%- iconos[it.key] %></svg>
+      <span><%= it.titulo %></span>
+    </a>
+  <% }) %>
+</nav>

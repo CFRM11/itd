@@ -192,7 +192,7 @@ async function render() {
 
   main.replaceChildren(result.node);
   main.removeAttribute('aria-busy');
-  document.title = `${result.title} · ITD`;
+  document.title = `${result.title} · snapCart`;
   window.scrollTo(0, 0);
 }
 

@@ -2,12 +2,23 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="color-scheme" content="light dark">
   <title><%= title %> · <%= siteName %></title>
   <link rel="stylesheet" href="/vendor/pico/pico.min.css">
   <link rel="stylesheet" href="/public/css/site.css">
+  <script src="/public/js/swipe.js" defer></script>
 </head>
-<body>
-  <%- include('nav') %>
-  <main class="container">
+<body class="app">
+  <header class="topbar">
+    <a href="/" class="brand" aria-label="<%= siteName %>, inicio"><%= siteName %></a>
+    <div class="sesion">
+      <% if (locals.sesion) { %>
+        <span class="sesion-nombre"><%= sesion.nombre %></span>
+        <form method="post" action="/salir"><button type="submit" class="outline secondary">Salir</button></form>
+      <% } else { %>
+        <a href="/ingresar/cliente">Entrar</a>
+      <% } %>
+    </div>
+  </header>
+  <main id="contenido" class="<%= locals.mainClass || 'main-page' %>">
