@@ -147,6 +147,8 @@
     botonTomar.addEventListener('click', alTomarFoto);
     botonActivar?.addEventListener('click', abrir);
 
+    raiz.querySelector('[data-cerrar-resultado]')?.addEventListener('click', () => { resultado.hidden = true; });
+
     // Cuándo encender y apagar la cámara
     const hoja = raiz.closest('dialog');
     const deslizador = document.querySelector('[data-swipe]');

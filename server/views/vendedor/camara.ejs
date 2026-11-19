@@ -1,22 +1,27 @@
-<section class="camara" data-camara data-modo="comparar">
-  <div class="visor">
+<section class="camara camara-full" data-camara data-modo="comparar">
+  <div class="visor visor-full">
     <video data-video autoplay playsinline muted aria-label="Vista de la cámara"></video>
     <p data-estado class="visor-estado" role="status">Abriendo cámara…</p>
+    <p class="camara-cabecera">Cuenta tus productos</p>
   </div>
 
   <canvas data-canvas hidden></canvas>
 
-  <div class="camara-botones">
+  <div class="camara-controles">
     <button type="button" class="outline" data-activar hidden>Activar cámara</button>
-    <button type="button" data-tomar disabled>Tomar foto</button>
+    <button type="button" class="obturador" data-tomar disabled aria-label="Tomar foto y contar"></button>
   </div>
 
-  <p data-error role="alert" hidden></p>
+  <p data-error role="alert" class="camara-error" hidden></p>
 
-  <article data-resultado hidden aria-live="polite">
-    <header><strong>Conteo de tus productos registrados</strong></header>
+  <article class="hoja-inferior" data-resultado hidden aria-live="polite">
+    <div class="agarre" aria-hidden="true"></div>
+    <header class="hoja-inferior-cabecera">
+      <strong>Conteo de tus productos</strong>
+      <button type="button" class="outline secondary" data-cerrar-resultado>Cerrar</button>
+    </header>
     <ul class="conteo" data-conteo></ul>
-    <p data-mensaje></p>
+    <p class="hoja-inferior-mensaje" data-mensaje></p>
   </article>
 </section>
 <script src="/public/js/camara.js" defer></script>
