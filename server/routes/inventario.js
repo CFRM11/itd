@@ -33,10 +33,12 @@ function validarItem(body = {}) {
 const volver = (res, params) => res.redirect(`/vendedor/inventario?${new URLSearchParams(params)}`);
 
 // Solo cuentas de vendedor llegan aquí (requireAuth). Las consultas van con el token del cliente (RLS).
-router.use('/vendedor/inventario', requireAuth('vendedor'));
+router.use('/vendedor', requireAuth('vendedor'));
 
-// Carga los artículos del vendedor y deja que la sección pinte la página.
-router.get('/vendedor/inventario', async (req, res, next) => {
+// Las páginas de vendedor pintan todos sus paneles a la vez, así que el inventario
+// se carga en cada GET de /vendedor/* (si no, el panel de inventario falla con 500).
+router.use('/vendedor', async (req, res, next) => {
+  if (req.method !== 'GET') return next();
   const inv = { items: [], error: '', aviso: '' };
   try {
     const { data, error } = await cliente(req.sesion.accessToken)

@@ -1,6 +1,13 @@
+const fs = require('node:fs');
+const path = require('node:path');
 const { createClient } = require('@supabase/supabase-js');
 
-// Cliente de Supabase. Usa solo la clave anon (pública); la seguridad de los datos
+// Carga el .env de la raíz del proyecto, sin importar desde dónde se arranque
+// (node, npm, nodemon). No pisa variables que ya existan en el entorno.
+const ENV_FILE = path.join(__dirname, '..', '.env');
+if (fs.existsSync(ENV_FILE)) process.loadEnvFile(ENV_FILE);
+
+// Cliente de Supabase. Usa solo la clave pública; la seguridad de los datos
 // la dan las políticas RLS de server/supabase/schema.sql.
 const URL_PROYECTO = process.env.SUPABASE_URL;
 // Nombre nuevo (publishable) o el clásico (anon); ambos son la clave pública.
