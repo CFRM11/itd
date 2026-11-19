@@ -1,0 +1,49 @@
+<%- include('../partials/head') %>
+
+<nav aria-label="breadcrumb">
+  <ul><li><a href="/alumnos">Alumnos</a></li><li>Nuevo</li></ul>
+</nav>
+
+<h1>Nuevo alumno</h1>
+
+<form method="post" action="/alumnos" novalidate>
+  <label>
+    Nombre completo
+    <input name="nombre" value="<%= values.nombre || '' %>" required
+      <%- errors.nombre ? 'aria-invalid="true"' : '' %>>
+    <% if (errors.nombre) { %><small><%= errors.nombre %></small><% } %>
+  </label>
+
+  <div class="grid">
+    <label>
+      Matrícula
+      <input name="matricula" value="<%= values.matricula || '' %>" required
+        <%- errors.matricula ? 'aria-invalid="true"' : '' %>>
+      <% if (errors.matricula) { %><small><%= errors.matricula %></small><% } %>
+    </label>
+    <label>
+      Semestre
+      <input type="number" name="semestre" min="1" max="12" value="<%= values.semestre || 1 %>"
+        <%- errors.semestre ? 'aria-invalid="true"' : '' %>>
+      <% if (errors.semestre) { %><small><%= errors.semestre %></small><% } %>
+    </label>
+  </div>
+
+  <label>
+    Carrera
+    <select name="carrera" <%- errors.carrera ? 'aria-invalid="true"' : '' %>>
+      <option value="">Selecciona…</option>
+      <% ['Sistemas', 'Industrial', 'Gestión', 'Electrónica', 'Mecatrónica'].forEach((c) => { %>
+        <option <%= values.carrera === c ? 'selected' : '' %>><%= c %></option>
+      <% }) %>
+    </select>
+    <% if (errors.carrera) { %><small><%= errors.carrera %></small><% } %>
+  </label>
+
+  <div class="grid">
+    <a href="/alumnos" role="button" class="secondary outline">Cancelar</a>
+    <button type="submit">Guardar</button>
+  </div>
+</form>
+
+<%- include('../partials/footer') %>

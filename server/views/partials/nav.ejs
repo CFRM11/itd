@@ -1,0 +1,12 @@
+<header class="container">
+  <nav>
+    <ul>
+      <li><a href="/" class="contrast"><strong><%= siteName %></strong></a></li>
+    </ul>
+    <ul>
+      <li><a href="/" <%- active === 'inicio' ? 'aria-current="page"' : '' %>>Inicio</a></li>
+      <li><a href="/alumnos" <%- active === 'alumnos' ? 'aria-current="page"' : '' %>>Alumnos</a></li>
+      <li><a href="/vendedor" <%- active === 'vendedor' ? 'aria-current="page"' : '' %>>Vendedores</a></li>
+    </ul>
+  </nav>
+</header>

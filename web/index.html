@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <!-- URL de la API por defecto. Se puede cambiar en despliegue o desde la vista Ajustes. -->
+  <meta name="api-url" content="http://localhost:3000/api">
+  <title>ITD</title>
+  <link rel="stylesheet" href="vendor/pico.classless.min.css">
+  <link rel="stylesheet" href="css/app.css">
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <a href="#contenido">Saltar al contenido</a>
+
+  <header>
+    <nav aria-label="Principal">
+      <ul>
+        <li><a href="#/"><strong>ITD</strong></a></li>
+      </ul>
+      <ul>
+        <li><a href="#/"><span aria-hidden="true">⌂</span> Inicio</a></li>
+        <li><a href="#/items"><span aria-hidden="true">☰</span> Elementos</a></li>
+        <li><a href="#/items/new"><span aria-hidden="true">＋</span> Nuevo</a></li>
+        <li><a href="#/settings"><span aria-hidden="true">⚙</span> Ajustes</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Aviso cuando la API no responde y se muestran datos cacheados -->
+  <aside role="status" hidden>Sin conexión con el servidor. Mostrando los últimos datos guardados.</aside>
+
+  <main id="contenido" tabindex="-1" aria-live="polite" aria-busy="true"></main>
+
+  <footer><small>ITD · frontend independiente de la API</small></footer>
+
+  <!-- ================= VISTAS (templates) ================= -->
+
+  <template id="tpl-home">
+    <hgroup>
+      <h1>Hola 👋</h1>
+      <p>Panel principal</p>
+    </hgroup>
+    <section aria-label="Resumen">
+      <article>
+        <header>Elementos</header>
+        <p><data data-field="total"></data></p>
+        <footer><a href="#/items">Ver todos →</a></footer>
+      </article>
+      <article>
+        <header>Por estado</header>
+        <dl>
+          <dt>Activos</dt><dd data-field="activo"></dd>
+          <dt>Pendientes</dt><dd data-field="pendiente"></dd>
+          <dt>Cerrados</dt><dd data-field="cerrado"></dd>
+        </dl>
+      </article>
+      <article>
+        <header>Acción rápida</header>
+        <p>Crea un registro nuevo.</p>
+        <footer><a href="#/items/new" role="button">Nuevo elemento</a></footer>
+      </article>
+    </section>
+  </template>
+
+  <template id="tpl-items">
+    <hgroup>
+      <h1>Elementos</h1>
+      <p><span data-field="count"></span> resultado(s)</p>
+    </hgroup>
+    <form role="search" data-form="search">
+      <input type="search" name="q" placeholder="Buscar…" aria-label="Buscar">
+      <button type="submit">Buscar</button>
+    </form>
+    <section aria-label="Listado"></section>
+    <p hidden>No hay resultados. <a href="#/items/new">Crea uno</a>.</p>
+  </template>
+
+  <template id="tpl-item-card">
+    <article>
+      <header>
+        <a><strong data-field="name"></strong></a>
+        <mark data-field="status"></mark>
+      </header>
+      <p data-field="note"></p>
+    </article>
+  </template>
+
+  <template id="tpl-item-detail">
+    <nav aria-label="Migas de pan">
+      <ul>
+        <li><a href="#/items">Elementos</a></li>
+        <li data-field="name"></li>
+      </ul>
+    </nav>
+    <article>
+      <header>
+        <h1 data-field="name"></h1>
+        <mark data-field="status"></mark>
+      </header>
+      <dl>
+        <dt>ID</dt><dd data-field="id"></dd>
+        <dt>Nota</dt><dd data-field="note"></dd>
+      </dl>
+      <footer>
+        <button type="button" data-action="delete">Eliminar</button>
+      </footer>
+    </article>
+  </template>
+
+  <template id="tpl-item-form">
+    <h1>Nuevo elemento</h1>
+    <form data-form="item" novalidate>
+      <label>
+        Nombre
+        <input name="name" required maxlength="120" autocomplete="off" aria-describedby="err-name">
+        <small id="err-name" data-error="name"></small>
+      </label>
+      <fieldset aria-describedby="err-status">
+        <legend>Estado</legend>
+        <label><input type="radio" name="status" value="activo" checked> activo</label>
+        <label><input type="radio" name="status" value="pendiente"> pendiente</label>
+        <label><input type="radio" name="status" value="cerrado"> cerrado</label>
+        <small id="err-status" data-error="status"></small>
+      </fieldset>
+      <label>
+        Nota
+        <textarea name="note" rows="3"></textarea>
+      </label>
+      <p role="alert" data-error="form"></p>
+      <footer>
+        <a href="#/items">Cancelar</a>
+        <button type="submit">Guardar</button>
+      </footer>
+    </form>
+  </template>
+
+  <template id="tpl-settings">
+    <h1>Ajustes</h1>
+    <form data-form="settings">
+      <label>
+        URL de la API
+        <input type="url" name="apiUrl" required placeholder="https://api.ejemplo.com/api">
+        <small>Por defecto se usa la del <code>&lt;meta name="api-url"&gt;</code>.</small>
+      </label>
+      <p role="status" data-field="result"></p>
+      <footer>
+        <button type="button" data-action="reset">Restablecer</button>
+        <button type="button" data-action="test">Probar conexión</button>
+        <button type="submit">Guardar</button>
+      </footer>
+    </form>
+  </template>
+
+  <template id="tpl-error">
+    <hgroup>
+      <h1 data-field="title"></h1>
+      <p data-field="message"></p>
+    </hgroup>
+    <p><a href="#/" role="button">Volver al inicio</a></p>
+  </template>
+</body>
+</html>

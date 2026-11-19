@@ -1,0 +1,31 @@
+<%- include('partials/head') %>
+
+<hgroup>
+  <h1>Bienvenido a <%= siteName %></h1>
+  <p>Panel principal de alumnos y vendedores</p>
+</hgroup>
+
+<section class="grid">
+  <article>
+    <header>Alumnos</header>
+    <p class="stat"><%= stats.alumnos %></p>
+    <footer><a href="/alumnos">Ver alumnos →</a></footer>
+  </article>
+  <article>
+    <header>Vendedores</header>
+    <p class="stat"><%= stats.vendedores %></p>
+    <footer><a href="/vendedor">Ver vendedores →</a></footer>
+  </article>
+  <article>
+    <header>Ventas totales</header>
+    <p class="stat"><%= money(stats.totalVentas) %></p>
+    <footer><a href="/vendedor">Detalle →</a></footer>
+  </article>
+</section>
+
+<section class="grid">
+  <a href="/alumnos/nuevo" role="button">Registrar alumno</a>
+  <a href="/vendedor/nuevo" role="button" class="secondary">Registrar vendedor</a>
+</section>
+
+<%- include('partials/footer') %>

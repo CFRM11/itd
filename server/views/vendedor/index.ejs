@@ -1,0 +1,32 @@
+<%- include('../partials/head') %>
+
+<div class="page-head">
+  <hgroup>
+    <h1>Vendedores</h1>
+    <p><%= vendedores.length %> resultado(s)</p>
+  </hgroup>
+  <a href="/vendedor/nuevo" role="button">+ Nuevo vendedor</a>
+</div>
+
+<% if (creado) { %>
+  <p class="aviso" role="status">Vendedor «<%= creado %>» registrado correctamente.</p>
+<% } %>
+
+<%- include('../partials/buscador', { action: '/vendedor', q, placeholder: 'Buscar por nombre, correo o zona…' }) %>
+
+<% if (vendedores.length === 0) { %>
+  <p>No hay vendedores que coincidan. <a href="/vendedor/nuevo">Registra uno</a>.</p>
+<% } else { %>
+  <section class="grid-cards">
+    <% vendedores.forEach((v) => { %>
+      <article>
+        <header><a href="/vendedor/<%= v.id %>"><strong><%= v.nombre %></strong></a></header>
+        <p><small><%= v.email %></small></p>
+        <p>Zona: <mark><%= v.zona %></mark></p>
+        <footer>Ventas: <strong><%= money(v.ventas) %></strong></footer>
+      </article>
+    <% }) %>
+  </section>
+<% } %>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,39 @@
+<%- include('../partials/head') %>
+
+<div class="page-head">
+  <hgroup>
+    <h1>Alumnos</h1>
+    <p><%= alumnos.length %> resultado(s)</p>
+  </hgroup>
+  <a href="/alumnos/nuevo" role="button">+ Nuevo alumno</a>
+</div>
+
+<% if (creado) { %>
+  <p class="aviso" role="status">Alumno «<%= creado %>» registrado correctamente.</p>
+<% } %>
+
+<%- include('../partials/buscador', { action: '/alumnos', q, placeholder: 'Buscar por nombre, matrícula o carrera…' }) %>
+
+<% if (alumnos.length === 0) { %>
+  <p>No hay alumnos que coincidan. <a href="/alumnos/nuevo">Registra uno</a>.</p>
+<% } else { %>
+  <div class="overflow-auto">
+    <table class="striped">
+      <thead>
+        <tr><th>Matrícula</th><th>Nombre</th><th>Carrera</th><th>Semestre</th></tr>
+      </thead>
+      <tbody>
+        <% alumnos.forEach((a) => { %>
+          <tr>
+            <td><code><%= a.matricula %></code></td>
+            <td><%= a.nombre %></td>
+            <td><%= a.carrera %></td>
+            <td><%= a.semestre %>°</td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+<% } %>
+
+<%- include('../partials/footer') %>

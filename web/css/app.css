@@ -1,0 +1,219 @@
+/* ==========================================================================
+   app.css — capa propia sobre Pico classless.
+   Reglas:
+     1. Mobile-first: estilos base = móvil; ampliar SOLO con @media (min-width).
+     2. Sin clases: selectores de elemento, landmark, :has(), [aria-*] y [data-*].
+     3. Variantes/estados con atributos: data-status, aria-current, aria-invalid, aria-busy.
+     4. El JS solo toca atributos (data-*, aria-*, hidden); nunca añade clases.
+   Breakpoints (iguales a Pico): 36rem (576) · 48rem (768) · 64rem (1024) · 80rem (1280)
+   ========================================================================== */
+
+/* ---------- 1. Tokens ---------- */
+:root {
+  --pico-font-family-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --pico-border-radius: 0.6rem;
+  --tabbar-h: 3.75rem;
+  --gap: 1rem;
+  --status-activo: #2e9e5b;
+  --status-pendiente: #d39e00;
+  --status-cerrado: #8a8f98;
+}
+
+/* ---------- 2. Accesibilidad ---------- */
+body > a[href="#contenido"] {
+  position: absolute;
+  left: -9999px;
+}
+body > a[href="#contenido"]:focus {
+  left: 1rem;
+  top: 1rem;
+  z-index: 100;
+  padding: 0.5rem 1rem;
+  background: var(--pico-background-color);
+}
+
+/* ---------- 3. Navegación principal ----------
+   Móvil: la segunda <ul> se convierte en barra de pestañas inferior (tipo app).
+   ≥48rem: vuelve a la cabecera como navegación horizontal. */
+body {
+  padding-bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom));
+}
+body > header nav > ul:last-of-type {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 10;
+  margin: 0;
+  padding: 0 0 env(safe-area-inset-bottom);
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  background: var(--pico-background-color);
+  border-top: 1px solid var(--pico-muted-border-color);
+}
+body > header nav > ul:last-of-type li {
+  padding: 0;
+  text-align: center;
+}
+body > header nav > ul:last-of-type a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tabbar-h);
+  margin: 0;
+  font-size: 0.75rem;
+  border-radius: 0;
+}
+body > header nav > ul:last-of-type a > span {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+nav a[aria-current="page"] {
+  color: var(--pico-primary);
+  font-weight: 600;
+}
+
+@media (min-width: 48rem) {
+  body {
+    padding-bottom: 0;
+  }
+  body > header nav > ul:last-of-type {
+    position: static;
+    display: flex;
+    padding: 0;
+    background: none;
+    border: 0;
+  }
+  body > header nav > ul:last-of-type a {
+    flex-direction: row;
+    gap: 0.35rem;
+    min-height: auto;
+    font-size: inherit;
+  }
+  body > header nav > ul:last-of-type a > span {
+    display: none;
+  }
+}
+
+/* ---------- 4. Rejillas automáticas ----------
+   Cualquier <section> que contenga <article> es una rejilla de tarjetas:
+   1 columna en móvil, crece sola según el ancho. */
+main section:has(> article) {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+  gap: var(--gap);
+}
+main section > article {
+  margin: 0;
+}
+
+/* ---------- 5. Tarjetas ---------- */
+article > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+article > header > h1 {
+  margin: 0;
+}
+article data {
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+/* Estado vía data-status (en vez de .badge-success, etc.) */
+article[data-status] mark {
+  color: #fff;
+  border-radius: 1rem;
+  padding: 0.1rem 0.6rem;
+  font-size: 0.8rem;
+}
+[data-status="activo"] mark    { background: var(--status-activo); }
+[data-status="pendiente"] mark { background: var(--status-pendiente); }
+[data-status="cerrado"] mark   { background: var(--status-cerrado); }
+[data-status="cerrado"] { opacity: 0.75; }
+
+/* ---------- 6. Formularios ---------- */
+form > footer {
+  display: flex;
+  flex-direction: column-reverse; /* móvil: botón principal arriba, a todo ancho */
+  gap: 0.75rem;
+  text-align: center;
+}
+form > footer button,
+article > footer button {
+  width: 100%;
+  margin: 0;
+}
+fieldset[aria-invalid="true"] > small {
+  color: var(--pico-del-color);
+}
+@media (min-width: 36rem) {
+  form > footer {
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+  }
+  form > footer button,
+  article > footer button {
+    width: auto;
+  }
+}
+
+/* ---------- 7. Migas de pan ---------- */
+main > nav[aria-label="Migas de pan"] ul {
+  padding: 0;
+}
+main > nav[aria-label="Migas de pan"] li {
+  padding-inline: 0;
+}
+main > nav[aria-label="Migas de pan"] li + li::before {
+  content: "/";
+  padding-inline: 0.5rem;
+  color: var(--pico-muted-color);
+}
+
+/* ---------- 8. Listas de definición en detalle ---------- */
+dl {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+dt {
+  font-weight: 600;
+}
+dd {
+  margin: 0 0 0.75rem;
+}
+@media (min-width: 36rem) {
+  dl {
+    grid-template-columns: max-content 1fr;
+    column-gap: 1.5rem;
+  }
+}
+
+/* ---------- 9. Aviso offline y errores ---------- */
+body > aside[role="status"] {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  margin: 0;
+  padding: 0.5rem 1rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: #3b2f00;
+  background: #ffe08a;
+}
+[data-error] {
+  color: var(--pico-del-color);
+}
+main[aria-busy="true"]:empty {
+  min-height: 40vh;
+}
+
+/* ---------- 10. Pie ---------- */
+body > footer {
+  text-align: center;
+  color: var(--pico-muted-color);
+}
