@@ -14,6 +14,9 @@ router.get('/', (req, res) => {
 // Registro, inicio y cierre de sesión: /registro/:tipo, /ingresar/:tipo, /salir
 router.use(authRoutes);
 
+// Cámara del vendedor: análisis de fotos con Gemini (API JSON; va antes que las redirecciones de inventario)
+router.use(require('./camara'));
+
 // Inventario de cada vendedor (CRUD). Va antes de las secciones para cargar sus datos.
 router.use(require('./inventario'));
 

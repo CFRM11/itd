@@ -43,7 +43,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.json({ limit: '100kb' }));
+app.use(express.json({ limit: '4mb' }));
 app.use(express.urlencoded({ extended: false, limit: '100kb' }));
 
 app.use(require('./auth/sesion').cargarSesion);

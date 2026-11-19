@@ -54,6 +54,18 @@ router.use('/vendedor', async (req, res, next) => {
   }
   inv.aviso = texto(req.query.aviso);
   inv.error = texto(req.query.error) || inv.error;
+
+  // Alta desde la cámara: ?nuevo=1&nombre=...&descripcion=...&tipo=...&precio=...
+  const precio = texto(req.query.precio);
+  inv.abrirNuevo = req.query.nuevo === '1';
+  inv.prefill = {
+    nombre: texto(req.query.nombre).slice(0, 120),
+    descripcion: texto(req.query.descripcion).slice(0, 1000),
+    tipo: TIPOS.includes(texto(req.query.tipo)) ? texto(req.query.tipo) : 'producto',
+    precio: /^\d+(\.\d{1,2})?$/.test(precio) ? precio : '',
+    imagen_url: '',
+    imagen_descripcion: '',
+  };
   res.locals.inv = inv;
   next();
 });

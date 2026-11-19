@@ -1,38 +1,42 @@
+<%
+  // item: artículo existente (edición) · prefill: valores iniciales (alta desde la cámara)
+  const v = (campo) => (item ? item[campo] : (prefill ? prefill[campo] : '')) ?? '';
+  const precio = item ? Number(item.precio).toFixed(2) : (prefill?.precio ?? '');
+  const tipo = item ? item.tipo : (prefill?.tipo || 'producto');
+%>
 <form method="post" action="<%= accion %>">
   <label>
     Nombre
-    <input name="nombre" required maxlength="120" value="<%= item ? item.nombre : '' %>">
+    <input name="nombre" required maxlength="120" value="<%= v('nombre') %>">
   </label>
 
   <label>
     Tipo
     <select name="tipo" required>
       <% ['producto', 'servicio'].forEach((t) => { %>
-        <option value="<%= t %>"<%= (item ? item.tipo : 'producto') === t ? ' selected' : '' %>><%= t === 'producto' ? 'Producto' : 'Servicio' %></option>
+        <option value="<%= t %>"<%= tipo === t ? ' selected' : '' %>><%= t === 'producto' ? 'Producto' : 'Servicio' %></option>
       <% }) %>
     </select>
   </label>
 
   <label>
     Precio
-    <input name="precio" inputmode="decimal" required pattern="\d+(\.\d{1,2})?" placeholder="0.00"
-      value="<%= item ? Number(item.precio).toFixed(2) : '' %>">
+    <input name="precio" inputmode="decimal" required pattern="\d+(\.\d{1,2})?" placeholder="0.00" value="<%= precio %>">
   </label>
 
   <label>
     Descripción
-    <textarea name="descripcion" rows="3" maxlength="1000"><%= item ? item.descripcion : '' %></textarea>
+    <textarea name="descripcion" rows="3" maxlength="1000"><%= v('descripcion') %></textarea>
   </label>
 
   <label>
     URL de la imagen
-    <input type="url" name="imagen_url" placeholder="https://..." value="<%= item && item.imagen_url ? item.imagen_url : '' %>">
+    <input type="url" name="imagen_url" placeholder="https://..." value="<%= v('imagen_url') %>">
   </label>
 
   <label>
     Descripción de la imagen
-    <input name="imagen_descripcion" maxlength="200" placeholder="Texto alternativo para la imagen"
-      value="<%= item ? item.imagen_descripcion : '' %>">
+    <input name="imagen_descripcion" maxlength="200" placeholder="Texto alternativo para la imagen" value="<%= v('imagen_descripcion') %>">
   </label>
 
   <button type="submit"><%= item ? 'Guardar cambios' : 'Agregar artículo' %></button>

@@ -1,35 +1,53 @@
 <% if (inv.aviso) { %><p role="status"><%= inv.aviso %></p><% } %>
 <% if (inv.error) { %><p role="alert"><%= inv.error %></p><% } %>
 
-<details>
-  <summary>Agregar artículo</summary>
-  <%- include('inventario-form', { item: null, accion: '/vendedor/inventario' }) %>
-</details>
-
 <% if (!inv.items.length && !inv.error) { %>
-  <p>Aún no tienes artículos en tu inventario.</p>
+  <p>Aún no tienes artículos. Usa el botón <strong>Agregar</strong> de abajo o toma una foto en la pestaña Cámara.</p>
 <% } %>
 
-<% inv.items.forEach((it) => { %>
-  <article>
-    <header>
-      <strong><%= it.nombre %></strong>
-      · <%= it.tipo === 'producto' ? 'Producto' : 'Servicio' %>
-      · $<%= Number(it.precio).toFixed(2) %>
-    </header>
-    <% if (it.imagen_url) { %>
-      <img src="<%= it.imagen_url %>" alt="<%= it.imagen_descripcion %>" loading="lazy" style="max-width: 100%; height: auto;">
-    <% } %>
-    <% if (it.descripcion) { %><p><%= it.descripcion %></p><% } %>
+<ul class="cards" role="list">
+  <% inv.items.forEach((it) => { %>
+    <li class="card">
+      <% if (it.imagen_url) { %>
+        <img class="card-foto" src="<%= it.imagen_url %>" alt="<%= it.imagen_descripcion %>" loading="lazy">
+      <% } else { %>
+        <div class="card-sin-foto" aria-hidden="true">Sin foto</div>
+      <% } %>
 
-    <details>
-      <summary>Editar</summary>
-      <%- include('inventario-form', { item: it, accion: '/vendedor/inventario/' + it.id }) %>
-    </details>
+      <div class="card-cuerpo">
+        <h2 class="card-titulo"><%= it.nombre %></h2>
+        <p class="card-meta">
+          <span class="badge"><%= it.tipo === 'producto' ? 'Producto' : 'Servicio' %></span>
+          <strong>$<%= Number(it.precio).toFixed(2) %></strong>
+        </p>
+        <% if (it.descripcion) { %><p class="card-desc"><%= it.descripcion %></p><% } %>
 
-    <form method="post" action="/vendedor/inventario/<%= it.id %>/eliminar"
-      onsubmit="return confirm('¿Eliminar este artículo?');">
-      <button type="submit" class="secondary outline">Eliminar</button>
-    </form>
-  </article>
-<% }) %>
+        <div class="card-acciones">
+          <button type="button" class="outline" data-abrir="dlg-<%= it.id %>">Editar</button>
+          <form method="post" action="/vendedor/inventario/<%= it.id %>/eliminar"
+            onsubmit="return confirm('¿Eliminar este artículo?');">
+            <button type="submit" class="secondary outline">Eliminar</button>
+          </form>
+        </div>
+      </div>
+
+      <dialog id="dlg-<%= it.id %>" class="hoja">
+        <header class="hoja-cabecera">
+          <h2>Editar artículo</h2>
+          <button type="button" class="outline secondary" data-cerrar>Cerrar</button>
+        </header>
+        <%- include('inventario-form', { item: it, prefill: null, accion: '/vendedor/inventario/' + it.id }) %>
+      </dialog>
+    </li>
+  <% }) %>
+</ul>
+
+<button type="button" class="agregar-fijo" data-abrir="dlg-nuevo">+ Agregar</button>
+
+<dialog id="dlg-nuevo" class="hoja" <%- inv.abrirNuevo ? 'data-abrir-auto' : '' %>>
+  <header class="hoja-cabecera">
+    <h2>Nuevo artículo</h2>
+    <button type="button" class="outline secondary" data-cerrar>Cerrar</button>
+  </header>
+  <%- include('inventario-form', { item: null, prefill: inv.prefill, accion: '/vendedor/inventario' }) %>
+</dialog>

@@ -142,3 +142,123 @@ main.main-swipe { display: flex; flex-direction: column; overflow: hidden; }
 .bottomnav svg { width: 1.6rem; height: 1.6rem; }
 .bottomnav a[aria-current="page"] { color: var(--pico-color); font-weight: 600; }
 .bottomnav a[aria-current="page"] svg { stroke-width: 2.4; }
+
+/* ---------- Inventario: tarjetas ---------- */
+.cards {
+  list-style: none;
+  margin: 0 0 5.5rem;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 40rem) {
+  .cards { grid-template-columns: 1fr 1fr; }
+}
+.card {
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+.card-foto {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+.card-sin-foto {
+  aspect-ratio: 4 / 3;
+  display: grid;
+  place-items: center;
+  background: var(--line);
+  color: var(--pico-muted-color);
+  font-size: 0.9rem;
+}
+.card-cuerpo { padding: 0.75rem 1rem; }
+.card-titulo { font-size: 1.1rem; margin: 0 0 0.25rem; }
+.card-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 0.5rem;
+}
+.card-desc {
+  margin: 0 0 0.75rem;
+  color: var(--pico-muted-color);
+  font-size: 0.9rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.card-acciones { display: flex; gap: 0.5rem; }
+.card-acciones button { width: auto; margin: 0; padding: 0.35rem 0.75rem; font-size: 0.9rem; }
+.card-acciones form { margin: 0; }
+.badge {
+  font-size: 0.75rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+}
+
+/* Botón fijo para agregar (encima de la barra inferior) */
+.agregar-fijo {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(var(--bottomnav-h) + env(safe-area-inset-bottom) + 1rem);
+  width: auto;
+  margin: 0;
+  padding: 0.75rem 1.5rem;
+  border-radius: 999px;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 0.25);
+  z-index: 5;
+}
+
+/* Hojas modales (alta y edición) */
+dialog.hoja {
+  width: min(92vw, 36rem);
+  max-height: 88vh;
+  border: none;
+  border-radius: 1rem;
+  padding: 1rem;
+  overflow: auto;
+}
+.hoja-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.hoja-cabecera h2 { margin: 0; font-size: 1.2rem; }
+.hoja-cabecera button { width: auto; margin: 0; }
+
+/* ---------- Cámara del vendedor ---------- */
+.camara { display: grid; gap: 1rem; }
+.camara [hidden] { display: none !important; }
+.visor {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  background: #000;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+.visor video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.visor-estado {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  text-align: center;
+  color: #fff;
+}
+.camara button { margin: 0; }
+.camara [data-resultado] { margin: 0; }
