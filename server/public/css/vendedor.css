@@ -1,0 +1,319 @@
+/* =========================================================
+   Vendedor · experiencia tipo feed (vertical, inmediata)
+   ========================================================= */
+
+/* Sin título ni márgenes en las pantallas de feed y cámara: ocupan todo el panel */
+.panel:has(.feed) hgroup,
+.panel:has(.camara-full) hgroup { display: none; }
+.panel:has(.feed) .panel-inner,
+.panel:has(.camara-full) .panel-inner { max-width: none; padding: 0; }
+
+@keyframes subir { from { transform: translateY(100%); } to { transform: none; } }
+@keyframes rebote { 50% { transform: scale(1.35); } }
+@keyframes aparecer { from { opacity: 0; transform: translate(-50%, -6px); } to { opacity: 1; transform: translate(-50%, 0); } }
+
+/* ---------- Feed de inventario ---------- */
+.feed {
+  position: relative;
+  height: calc(100dvh - var(--topbar-h) - var(--bottomnav-h) - 2.75rem - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  overflow: hidden;
+  background: #0b0b0f;
+}
+.feed-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+}
+.feed-lista::-webkit-scrollbar { display: none; }
+.slide {
+  position: relative;
+  height: 100%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  color: #fff;
+  background: #111;
+}
+.slide[hidden] { display: none !important; }
+.slide-foto {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.slide-sin-foto {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 5rem;
+  background: linear-gradient(135deg, #1f2937, #374151);
+}
+.slide-velo {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgb(0 0 0 / 0.85) 0%, rgb(0 0 0 / 0) 55%);
+}
+.slide-info {
+  position: relative;
+  padding: 1rem 1.25rem 5.25rem;
+  max-width: calc(100% - 5.5rem);
+}
+.slide-titulo { color: #fff; font-size: 1.6rem; line-height: 1.15; margin: 0.4rem 0; }
+.slide-desc { color: rgb(255 255 255 / 0.85); font-size: 0.95rem; margin: 0 0 0.5rem; }
+.slide-precio { color: #fff; font-size: 1.5rem; font-weight: 800; margin: 0; }
+.chip {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.2);
+  backdrop-filter: blur(6px);
+}
+.slide-rail {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 6.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  z-index: 2;
+}
+.slide-rail form { margin: 0; }
+.rail-btn {
+  width: 3.1rem;
+  height: 3.1rem;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.18);
+  color: #fff;
+  font-size: 1.35rem;
+  backdrop-filter: blur(8px);
+  transition: transform 0.12s ease, background 0.12s ease;
+}
+.rail-btn:active { transform: scale(0.9); background: rgb(255 255 255 / 0.35); }
+.rail-borrar { background: rgb(239 68 68 / 0.4); }
+.rail-cantidad {
+  min-width: 2.2rem;
+  text-align: center;
+  color: #fff;
+  font-weight: 800;
+  font-size: 1.15rem;
+}
+.rebote { animation: rebote 0.25s ease-out; }
+
+.feed-filtros {
+  position: absolute;
+  top: 0.6rem;
+  left: 0;
+  right: 0;
+  z-index: 4;
+  display: flex;
+  gap: 0.4rem;
+  justify-content: center;
+  overflow-x: auto;
+  padding: 0 0.75rem;
+  scrollbar-width: none;
+}
+.chip-filtro {
+  width: auto;
+  margin: 0;
+  padding: 0.35rem 0.85rem;
+  border: 0;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.5);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+  backdrop-filter: blur(6px);
+}
+.chip-filtro[aria-pressed="true"] { background: #fff; color: #111; }
+
+.feed-acciones {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0.9rem;
+  z-index: 4;
+  display: flex;
+  gap: 0.6rem;
+  justify-content: center;
+  padding: 0 1rem;
+}
+.feed-acciones button {
+  width: auto;
+  margin: 0;
+  padding: 0.8rem 1.25rem;
+  border: 0;
+  border-radius: 999px;
+  font-weight: 700;
+  box-shadow: 0 6px 20px rgb(0 0 0 / 0.35);
+}
+.accion-principal { background: #fff; color: #111; }
+.accion-secundaria { background: rgb(255 255 255 / 0.2); color: #fff; backdrop-filter: blur(8px); }
+
+.feed-vacio {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 0.5rem;
+  padding: 2rem;
+  text-align: center;
+  color: #fff;
+  background: linear-gradient(160deg, #1f2937, #0b0b0f);
+}
+.feed-vacio-titulo { font-size: 1.4rem; font-weight: 800; margin: 0; }
+.feed-vacio button { width: auto; margin-top: 0.75rem; border: 0; border-radius: 999px; background: #fff; color: #111; font-weight: 700; }
+
+.toast {
+  position: absolute;
+  top: 3.25rem;
+  left: 50%;
+  z-index: 9;
+  margin: 0;
+  max-width: calc(100% - 2rem);
+  padding: 0.6rem 1rem;
+  border-radius: 999px;
+  background: #111;
+  color: #fff;
+  font-size: 0.9rem;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.35);
+  transform: translateX(-50%);
+  animation: aparecer 0.2s ease-out;
+}
+.toast[data-tipo="error"] { background: #b91c1c; }
+
+/* ---------- Hojas (diálogos) como hojas inferiores ---------- */
+dialog.hoja {
+  margin: auto auto 0;
+  width: min(100%, 40rem);
+  max-height: 92dvh;
+  border: 0;
+  border-radius: 1.25rem 1.25rem 0 0;
+  padding: 1rem 1rem 1.5rem;
+  overflow: auto;
+}
+dialog.hoja[open] { animation: subir 0.25s ease-out; }
+dialog.hoja::backdrop { background: rgb(0 0 0 / 0.55); backdrop-filter: blur(3px); }
+dialog.hoja-camara { width: min(100%, 36rem); }
+dialog.hoja-ancha { width: min(100%, 48rem); }
+dialog.hoja input,
+dialog.hoja select,
+dialog.hoja textarea { font-size: 16px; }
+
+/* ---------- Cámara a pantalla completa ---------- */
+.camara-full {
+  position: relative;
+  display: block;
+  height: calc(100dvh - var(--topbar-h) - var(--bottomnav-h) - 2.75rem - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  overflow: hidden;
+  background: #000;
+}
+.camara-full .visor {
+  position: absolute;
+  inset: 0;
+  aspect-ratio: auto;
+  border-radius: 0;
+}
+.camara-full .visor video { height: 100%; }
+.camara-cabecera {
+  position: absolute;
+  top: 0.9rem;
+  left: 0;
+  right: 0;
+  margin: 0;
+  text-align: center;
+  color: #fff;
+  font-weight: 700;
+  text-shadow: 0 1px 6px rgb(0 0 0 / 0.6);
+  z-index: 2;
+}
+.camara-controles {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 1.5rem;
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+.camara-controles > button:not(.obturador) { width: auto; margin: 0; }
+.obturador {
+  width: 76px;
+  height: 76px;
+  margin: 0;
+  padding: 0;
+  border: 5px solid #fff;
+  border-radius: 50%;
+  background: #ef4444;
+  box-shadow: 0 0 0 4px rgb(255 255 255 / 0.35);
+  transition: transform 0.1s ease, opacity 0.2s ease;
+}
+.obturador:active:not(:disabled) { transform: scale(0.9); }
+.obturador:disabled { opacity: 0.4; }
+.camara-error {
+  position: absolute;
+  top: 3.25rem;
+  left: 1rem;
+  right: 1rem;
+  z-index: 4;
+  margin: 0;
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.75rem;
+  background: #b91c1c;
+  color: #fff;
+}
+.hoja-inferior {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+  margin: 0;
+  max-height: 62%;
+  overflow: auto;
+  padding: 0.75rem 1rem 1.25rem;
+  border-radius: 1.25rem 1.25rem 0 0;
+  background: var(--pico-background-color);
+  box-shadow: 0 -10px 30px rgb(0 0 0 / 0.3);
+  animation: subir 0.25s ease-out;
+}
+.agarre {
+  width: 40px;
+  height: 4px;
+  margin: 0 auto 0.6rem;
+  border-radius: 4px;
+  background: var(--line);
+}
+.hoja-inferior-cabecera { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; }
+.hoja-inferior-cabecera button { width: auto; margin: 0; }
+.hoja-inferior-mensaje { margin: 0.5rem 0 0; color: var(--pico-muted-color); }
+
+/* ---------- Movimiento reducido ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+dialog.hoja { display: block; }
+dialog.hoja[open] { display: block; }
+.obturador { flex: none; }
+dialog.hoja:not([open]) { display: none; }
+.camara-botones .obturador { flex: none; width: 76px; min-width: 76px; height: 76px; }

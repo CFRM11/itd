@@ -1,34 +1,13 @@
 const { Router } = require('express');
 const { cliente } = require('../supabase');
 const { requireAuth } = require('../auth/sesion');
+const { subirFoto } = require('../storage');
+const { validarItem } = require('../inventario-validar');
 
 const TIPOS = ['producto', 'servicio'];
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const texto = (v) => String(v ?? '').trim();
 const router = Router();
-
-function validarItem(body = {}) {
-  const value = {
-    nombre: texto(body.nombre),
-    descripcion: texto(body.descripcion),
-    imagen_url: texto(body.imagen_url) || null,
-    imagen_descripcion: texto(body.imagen_descripcion),
-    precio: Number(body.precio),
-    tipo: texto(body.tipo),
-  };
-  const errores = [];
-  if (!value.nombre || value.nombre.length > 120) errores.push('El nombre es obligatorio (máximo 120 caracteres).');
-  if (value.descripcion.length > 1000) errores.push('La descripción no puede pasar de 1000 caracteres.');
-  if (value.imagen_url && (!/^https?:\/\/\S+$/i.test(value.imagen_url) || value.imagen_url.length > 2048)) {
-    errores.push('La URL de la imagen debe empezar con http:// o https://.');
-  }
-  if (value.imagen_descripcion.length > 200) errores.push('La descripción de la imagen no puede pasar de 200 caracteres.');
-  if (!/^\d+(\.\d{1,2})?$/.test(texto(body.precio)) || value.precio > 9999999999) {
-    errores.push('El precio debe ser un número mayor o igual a 0, con hasta 2 decimales.');
-  }
-  if (!TIPOS.includes(value.tipo)) errores.push('Elige un tipo: producto o servicio.');
-  return { value, errores };
-}
 
 const volver = (res, params) => res.redirect(`/vendedor/inventario?${new URLSearchParams(params)}`);
 
@@ -55,7 +34,7 @@ router.use('/vendedor', async (req, res, next) => {
   inv.aviso = texto(req.query.aviso);
   inv.error = texto(req.query.error) || inv.error;
 
-  // Alta desde la cámara: ?nuevo=1&nombre=...&descripcion=...&tipo=...&precio=...
+  // Alta desde la cámara de comparación: ?nuevo=1&nombre=...&descripcion=...&tipo=...&precio=...
   const precio = texto(req.query.precio);
   inv.abrirNuevo = req.query.nuevo === '1';
   inv.prefill = {
@@ -63,8 +42,7 @@ router.use('/vendedor', async (req, res, next) => {
     descripcion: texto(req.query.descripcion).slice(0, 1000),
     tipo: TIPOS.includes(texto(req.query.tipo)) ? texto(req.query.tipo) : 'producto',
     precio: /^\d+(\.\d{1,2})?$/.test(precio) ? precio : '',
-    imagen_url: '',
-    imagen_descripcion: '',
+    cantidad: 1,
   };
   res.locals.inv = inv;
   next();
@@ -74,9 +52,21 @@ router.post('/vendedor/inventario', async (req, res) => {
   const { value, errores } = validarItem(req.body);
   if (errores.length) return volver(res, { error: errores.join(' ') });
 
+  let imagen_url = null;
+  try {
+    imagen_url = await subirFoto(req.sesion, req.body.imagen_data);
+  } catch (err) {
+    return volver(res, { error: err.message });
+  }
+
   const { error } = await cliente(req.sesion.accessToken)
     .from('inventario')
-    .insert({ ...value, vendedor_id: req.sesion.id });
+    .insert({
+      ...value,
+      vendedor_id: req.sesion.id,
+      imagen_url,
+      imagen_descripcion: imagen_url ? value.nombre : '',
+    });
   if (error) {
     console.error('[inventario] alta:', error.message);
     return volver(res, { error: 'No se pudo guardar el artículo.' });
@@ -89,9 +79,18 @@ router.post('/vendedor/inventario/:id', async (req, res) => {
   const { value, errores } = validarItem(req.body);
   if (errores.length) return volver(res, { error: errores.join(' ') });
 
+  // Sin foto nueva se conserva la imagen que ya tenía el artículo.
+  let fotos = {};
+  try {
+    const imagen_url = await subirFoto(req.sesion, req.body.imagen_data);
+    if (imagen_url) fotos = { imagen_url, imagen_descripcion: value.nombre };
+  } catch (err) {
+    return volver(res, { error: err.message });
+  }
+
   const { data, error } = await cliente(req.sesion.accessToken)
     .from('inventario')
-    .update({ ...value, actualizado: new Date().toISOString() })
+    .update({ ...value, ...fotos, actualizado: new Date().toISOString() })
     .eq('id', req.params.id)
     .eq('vendedor_id', req.sesion.id)
     .select('id');

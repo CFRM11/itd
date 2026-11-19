@@ -1,48 +1,66 @@
-<% if (inv.aviso) { %><p role="status"><%= inv.aviso %></p><% } %>
-<% if (inv.error) { %><p role="alert"><%= inv.error %></p><% } %>
+<section class="feed" data-feed data-aviso="<%= inv.aviso %>" data-error="<%= inv.error %>">
+  <nav class="feed-filtros" aria-label="Filtrar">
+    <button type="button" class="chip-filtro" aria-pressed="true" data-filtro="todos">Todos <span data-contador-todos><%= inv.items.length %></span></button>
+    <button type="button" class="chip-filtro" aria-pressed="false" data-filtro="producto">Productos</button>
+    <button type="button" class="chip-filtro" aria-pressed="false" data-filtro="servicio">Servicios</button>
+  </nav>
 
-<% if (!inv.items.length && !inv.error) { %>
-  <p>Aún no tienes artículos. Usa el botón <strong>Agregar</strong> de abajo o toma una foto en la pestaña Cámara.</p>
-<% } %>
+  <% if (!inv.items.length && !inv.error) { %>
+    <div class="feed-vacio">
+      <p class="feed-vacio-titulo">Tu inventario está vacío</p>
+      <p>Toma una foto de tus productos y Gemini los cuenta por ti.</p>
+      <button type="button" data-abrir="dlg-foto">📷 Contar por foto</button>
+    </div>
+  <% } %>
 
-<ul class="cards" role="list">
-  <% inv.items.forEach((it) => { %>
-    <li class="card">
-      <% if (it.imagen_url) { %>
-        <img class="card-foto" src="<%= it.imagen_url %>" alt="<%= it.imagen_descripcion %>" loading="lazy">
-      <% } else { %>
-        <div class="card-sin-foto" aria-hidden="true">Sin foto</div>
-      <% } %>
+  <ol class="feed-lista" role="list">
+    <% inv.items.forEach((it) => { %>
+      <li class="slide" data-id="<%= it.id %>" data-tipo="<%= it.tipo %>">
+        <% if (it.imagen_url) { %>
+          <img class="slide-foto" src="<%= it.imagen_url %>" alt="<%= it.imagen_descripcion %>" loading="lazy">
+        <% } else { %>
+          <div class="slide-sin-foto" aria-hidden="true">📦</div>
+        <% } %>
+        <div class="slide-velo" aria-hidden="true"></div>
 
-      <div class="card-cuerpo">
-        <h2 class="card-titulo"><%= it.nombre %></h2>
-        <p class="card-meta">
-          <span class="badge"><%= it.tipo === 'producto' ? 'Producto' : 'Servicio' %></span>
-          <strong>$<%= Number(it.precio).toFixed(2) %></strong>
-        </p>
-        <% if (it.descripcion) { %><p class="card-desc"><%= it.descripcion %></p><% } %>
+        <div class="slide-info">
+          <span class="chip"><%= it.tipo === 'producto' ? 'Producto' : 'Servicio' %></span>
+          <h2 class="slide-titulo"><%= it.nombre %></h2>
+          <% if (it.descripcion) { %><p class="slide-desc"><%= it.descripcion %></p><% } %>
+          <p class="slide-precio">$<%= Number(it.precio).toFixed(2) %></p>
+        </div>
 
-        <div class="card-acciones">
-          <button type="button" class="outline" data-abrir="dlg-<%= it.id %>">Editar</button>
+        <div class="slide-rail">
+          <button type="button" class="rail-btn" data-cant="1" aria-label="Sumar uno">+</button>
+          <output class="rail-cantidad" data-cant-valor aria-live="polite"><%= it.cantidad ?? 1 %></output>
+          <button type="button" class="rail-btn" data-cant="-1" aria-label="Restar uno">−</button>
+          <button type="button" class="rail-btn rail-editar" data-abrir="dlg-<%= it.id %>" aria-label="Editar">✎</button>
           <form method="post" action="/vendedor/inventario/<%= it.id %>/eliminar"
             onsubmit="return confirm('¿Eliminar este artículo?');">
-            <button type="submit" class="secondary outline">Eliminar</button>
+            <button type="submit" class="rail-btn rail-borrar" aria-label="Eliminar">🗑</button>
           </form>
         </div>
-      </div>
+      </li>
+    <% }) %>
+  </ol>
 
-      <dialog id="dlg-<%= it.id %>" class="hoja">
-        <header class="hoja-cabecera">
-          <h2>Editar artículo</h2>
-          <button type="button" class="outline secondary" data-cerrar>Cerrar</button>
-        </header>
-        <%- include('inventario-form', { item: it, prefill: null, accion: '/vendedor/inventario/' + it.id }) %>
-      </dialog>
-    </li>
-  <% }) %>
-</ul>
+  <div class="feed-acciones">
+    <button type="button" class="accion-principal" data-abrir="dlg-foto">📷 Por foto</button>
+    <button type="button" class="accion-secundaria" data-abrir="dlg-nuevo">+ Agregar</button>
+  </div>
 
-<button type="button" class="agregar-fijo" data-abrir="dlg-nuevo">+ Agregar</button>
+  <p class="toast" data-toast role="status" aria-live="polite" hidden></p>
+</section>
+
+<% inv.items.forEach((it) => { %>
+  <dialog id="dlg-<%= it.id %>" class="hoja">
+    <header class="hoja-cabecera">
+      <h2>Editar artículo</h2>
+      <button type="button" class="outline secondary" data-cerrar>Cerrar</button>
+    </header>
+    <%- include('inventario-form', { item: it, prefill: null, accion: '/vendedor/inventario/' + it.id }) %>
+  </dialog>
+<% }) %>
 
 <dialog id="dlg-nuevo" class="hoja" <%- inv.abrirNuevo ? 'data-abrir-auto' : '' %>>
   <header class="hoja-cabecera">
@@ -51,3 +69,42 @@
   </header>
   <%- include('inventario-form', { item: null, prefill: inv.prefill, accion: '/vendedor/inventario' }) %>
 </dialog>
+
+<!-- Alta por foto: la cámara toma la foto, Gemini enumera los productos y se abre la revisión -->
+<dialog id="dlg-foto" class="hoja hoja-camara">
+  <header class="hoja-cabecera">
+    <h2>Contar por foto</h2>
+    <button type="button" class="outline secondary" data-cerrar>Cerrar</button>
+  </header>
+  <section class="camara" data-camara data-modo="inventariar">
+    <p class="camara-ayuda">Pon los productos a la vista. Gemini contará cada tipo.</p>
+    <div class="visor">
+      <video data-video autoplay playsinline muted aria-label="Cámara para contar productos"></video>
+      <p data-estado class="visor-estado" role="status">Abre la cámara para comenzar.</p>
+    </div>
+    <canvas data-canvas hidden></canvas>
+    <div class="camara-botones">
+      <button type="button" class="outline" data-activar hidden>Activar cámara</button>
+      <button type="button" class="obturador" data-tomar disabled aria-label="Tomar foto"></button>
+    </div>
+    <p data-error role="alert" hidden></p>
+  </section>
+</dialog>
+
+<!-- Revisión editable de los productos encontrados (la llena revision.js) -->
+<dialog id="dlg-revision" class="hoja hoja-ancha">
+  <header class="hoja-cabecera">
+    <h2>Revisa los artículos</h2>
+    <button type="button" class="outline secondary" data-cerrar>Cerrar</button>
+  </header>
+  <p data-rev-mensaje></p>
+  <div data-rev-filas class="rev-filas"></div>
+  <div class="rev-acciones">
+    <button type="button" class="outline" data-rev-agregar>+ Agregar fila</button>
+    <button type="button" data-rev-guardar>Guardar artículos</button>
+  </div>
+  <p data-rev-error role="alert" hidden></p>
+</dialog>
+
+<script src="/public/js/revision.js" defer></script>
+<script src="/public/js/feed.js" defer></script>

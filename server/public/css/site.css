@@ -262,3 +262,70 @@ dialog.hoja {
 }
 .camara button { margin: 0; }
 .camara [data-resultado] { margin: 0; }
+
+/* ---------- Cámara: botones, conteo y foto del formulario ---------- */
+.camara-botones { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.camara-botones button { flex: 1; width: auto; min-width: 9rem; margin: 0; }
+.conteo {
+  list-style: none;
+  margin: 0 0 0.75rem;
+  padding: 0;
+}
+.conteo li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--line);
+}
+.foto-registro { display: grid; gap: 0.75rem; margin-bottom: 1rem; }
+.foto-registro .visor { aspect-ratio: 4 / 3; }
+.foto-registro [data-foto-wrap] { display: grid; gap: 0.25rem; }
+.foto-registro [data-foto-wrap][hidden] { display: none !important; }
+.foto-preview {
+  width: 100%;
+  max-height: 14rem;
+  object-fit: cover;
+  border-radius: 0.75rem;
+}
+
+/* ---------- Barra fija de inventario (Por foto · Agregar) ---------- */
+.barra-fija {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(var(--bottomnav-h) + env(safe-area-inset-bottom) + 1rem);
+  display: flex;
+  gap: 0.5rem;
+  z-index: 5;
+}
+.barra-fija button {
+  width: auto;
+  margin: 0;
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 0.25);
+  white-space: nowrap;
+}
+
+/* ---------- Revisión de productos encontrados en una foto ---------- */
+dialog.hoja-ancha { width: min(96vw, 48rem); }
+.rev-filas { display: grid; gap: 0.75rem; margin: 0.75rem 0; }
+.rev-fila {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr auto;
+  gap: 0.5rem;
+  align-items: end;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--line);
+}
+.rev-fila label { margin: 0; }
+.rev-fila label span { display: block; font-size: 0.75rem; color: var(--pico-muted-color); }
+.rev-fila input, .rev-fila select { margin: 0; }
+.rev-quitar { width: auto; margin: 0; padding: 0.4rem 0.6rem; font-size: 0.85rem; }
+@media (max-width: 40rem) {
+  .rev-fila { grid-template-columns: 1fr 1fr; }
+  .rev-fila label:first-child { grid-column: 1 / -1; }
+}
+.rev-acciones { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.rev-acciones button { width: auto; margin: 0; flex: 1; }

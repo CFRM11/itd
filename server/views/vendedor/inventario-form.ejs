@@ -1,10 +1,31 @@
 <%
-  // item: artículo existente (edición) · prefill: valores iniciales (alta desde la cámara)
+  // item: artículo existente (edición) · prefill: valores iniciales (alta desde la cámara de comparación)
   const v = (campo) => (item ? item[campo] : (prefill ? prefill[campo] : '')) ?? '';
   const precio = item ? Number(item.precio).toFixed(2) : (prefill?.precio ?? '');
   const tipo = item ? item.tipo : (prefill?.tipo || 'producto');
+  const fotoActual = item && item.imagen_url ? item.imagen_url : '';
+  const cantidad = item ? (item.cantidad ?? 1) : (prefill?.cantidad ?? 1);
 %>
 <form method="post" action="<%= accion %>">
+  <div class="foto-registro" data-camara data-modo="describir">
+    <div class="visor">
+      <video data-video autoplay playsinline muted aria-label="Cámara para tomar la foto del producto"></video>
+      <p data-estado class="visor-estado" role="status">Abre la cámara para tomar una foto del producto.</p>
+    </div>
+    <canvas data-canvas hidden></canvas>
+    <div class="camara-botones">
+      <button type="button" class="outline" data-activar hidden>Activar cámara</button>
+      <button type="button" data-tomar disabled>Tomar foto y completar</button>
+    </div>
+    <p data-error role="alert" hidden></p>
+    <div data-foto-wrap<%- fotoActual ? '' : ' hidden' %>>
+      <img data-foto class="foto-preview" src="<%= fotoActual %>" alt="Foto del producto">
+      <small>Se guardará con el artículo al pulsar Guardar.</small>
+    </div>
+  </div>
+
+  <input type="hidden" name="imagen_data" value="">
+
   <label>
     Nombre
     <input name="nombre" required maxlength="120" value="<%= v('nombre') %>">
@@ -25,18 +46,13 @@
   </label>
 
   <label>
+    Cantidad
+    <input name="cantidad" type="number" inputmode="numeric" min="0" max="9999" step="1" required value="<%= cantidad %>">
+  </label>
+
+  <label>
     Descripción
     <textarea name="descripcion" rows="3" maxlength="1000"><%= v('descripcion') %></textarea>
-  </label>
-
-  <label>
-    URL de la imagen
-    <input type="url" name="imagen_url" placeholder="https://..." value="<%= v('imagen_url') %>">
-  </label>
-
-  <label>
-    Descripción de la imagen
-    <input name="imagen_descripcion" maxlength="200" placeholder="Texto alternativo para la imagen" value="<%= v('imagen_descripcion') %>">
   </label>
 
   <button type="submit"><%= item ? 'Guardar cambios' : 'Agregar artículo' %></button>

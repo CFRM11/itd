@@ -26,4 +26,4 @@ function cliente(accessToken) {
   });
 }
 
-module.exports = { cliente };
+module.exports = { cliente, URL_PROYECTO, CLAVE_PUBLICA: CLAVE_ANON };
