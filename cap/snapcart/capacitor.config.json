@@ -1,0 +1,13 @@
+{
+  "appId": "com.snapcart.hack",
+  "appName": "snapCart!",
+  "webDir": "dist",
+  "server": {
+    "url": "https://snapcart.saviorcode.com"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchAutoHide": false
+    }
+  }
+}

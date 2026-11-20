@@ -2,11 +2,11 @@
    Vendedor · experiencia tipo feed (vertical, inmediata)
    ========================================================= */
 
-/* Sin título ni márgenes en las pantallas de feed y cámara: ocupan todo el panel */
-.panel:has(.feed) hgroup,
-.panel:has(.camara-full) hgroup { display: none; }
-.panel:has(.feed) .panel-inner,
-.panel:has(.camara-full) .panel-inner { max-width: none; padding: 0; }
+/* Sin título ni márgenes en las pantallas de feed y cámara: ocupan toda la pantalla */
+.page:has(.feed) hgroup,
+.page:has(.camara-full) hgroup { display: none; }
+.page:has(.feed),
+.page:has(.camara-full) { max-width: none; padding: 0; }
 
 @keyframes subir { from { transform: translateY(100%); } to { transform: none; } }
 @keyframes rebote { 50% { transform: scale(1.35); } }
@@ -27,6 +27,7 @@
   overflow-y: auto;
   scroll-snap-type: y mandatory;
   overscroll-behavior: contain;
+  touch-action: pan-y; /* deja que el gesto horizontal suba al swipe de pestañas */
   scrollbar-width: none;
 }
 .feed-lista::-webkit-scrollbar { display: none; }

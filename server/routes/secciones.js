@@ -1,16 +1,16 @@
 // Definición de las secciones principales y sus subrutas.
-// Cada subpágina es un panel deslizable; su contenido está en views/<seccion>/<slug>.ejs
-// `corto` es la etiqueta de la pestaña (debe caber en móvil).
+// Cada subpágina es una pantalla propia, enlazada directo desde la barra inferior.
+// El orden del arreglo define el orden de los iconos en la barra inferior.
 module.exports = {
   vendedor: {
     titulo: 'Vendedor',
     base: '/vendedor',
     tipo: 'vendedor',
     paginas: [
-      { slug: 'perfil', corto: 'Perfil', titulo: 'Mi perfil', descripcion: 'Datos generales del vendedor.' },
-      { slug: 'actividad-economica', corto: 'Actividad', titulo: 'Mi actividad económica', descripcion: 'Giro y actividades registradas.' },
+      { slug: 'inventario', corto: 'Catálogo', titulo: 'Inventario', descripcion: 'Productos y existencias.' },
       { slug: 'camara', corto: 'Cámara', titulo: 'Cámara', descripcion: 'Información de la cámara.' },
-      { slug: 'inventario', corto: 'Inventario', titulo: 'Inventario', descripcion: 'Productos y existencias.' },
+      { slug: 'actividad-economica', corto: 'Análisis', titulo: 'Mi actividad económica', descripcion: 'Giro y actividades registradas.' },
+      { slug: 'perfil', corto: 'Usuario', titulo: 'Mi perfil', descripcion: 'Datos generales del vendedor.' },
     ],
   },
 };

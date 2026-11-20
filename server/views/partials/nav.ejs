@@ -1,17 +1,19 @@
 <%
-  // Barra inferior: solo enlaces (se cambia de sección tocando, nunca deslizando).
+  // Barra inferior: iconos planos, todos a un toque (sin pestañas ni deslizar).
   const iconos = {
-    inicio: '<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/>',
-    vendedor: '<path d="M4 21V5a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v16"/><path d="M15 10h4a1 1 0 0 1 1 1v10"/><path d="M2 21h20M8 8h3M8 12h3M8 16h3"/>',
+    inicio: '<path d="M6,19H9V13h6v6h3V10L12,5.5L6,10v9ZM4,21V9l8-6l8,6V21H13V15H11v6H4Zm8-8.75Z"/>',
+    inventario: '<path d="M5,19h9V14h5V5H5V19Zm0,2q-0.83,0-1.41-0.59T3,19V5Q3,4.17 3.59,3.59T5,3H19q0.83,0 1.41,0.59T21,5V15l-6,6H5Zm2-7V12h5v2H7Zm0-4V8H17v2H7ZM5,19V14V5V19Z"/>',
+    camara: '<path d="M11,13H5V11h6V5h2v6h6v2H13v6H11V13Z"/>',
+    'actividad-economica': '<path d="M3.5,18.5L2,17L9.5,9.5l4,4l7.1-8L22,6.9l-8.5,9.6l-4-4l-6,6Z"/>',
+    perfil: '<path d="M9.18,10.83Q8,9.65 8,8T9.18,5.18T12,4t2.83,1.18T16,8t-1.17,2.82T12,12T9.18,10.83ZM4,20V17.2q0-0.85 0.44-1.56q0.44-0.71 1.16-1.09q1.55-0.78 3.15-1.16T12,13t3.25,0.39t3.15,1.16q0.72,0.38 1.16,1.09T20,17.2V20H4Zm2-2H18V17.2q0-0.27-0.14-0.5q-0.14-0.22-0.36-0.35q-1.35-0.68-2.72-1.01T12,15T9.23,15.34T6.5,16.35Q6.28,16.48 6.14,16.7Q6,16.93 6,17.2V18Zm7.41-8.59Q14,8.82 14,8T13.41,6.59T12,6T10.59,6.59Q10,7.18 10,8t0.59,1.41T12,10t1.41-0.59ZM12,8Zm0,10Z"/>',
   };
   const items = [{ key: 'inicio', href: '/', titulo: 'Inicio' }]
-    .concat(Object.entries(secciones).map(([key, s]) => ({ key, href: s.base, titulo: s.titulo })));
+    .concat(Object.values(secciones).flatMap((s) => s.paginas.map((p) => ({ key: p.slug, href: `${s.base}/${p.slug}`, titulo: p.corto }))));
 %>
 <nav class="bottomnav" aria-label="Principal">
   <% items.forEach((it) => { %>
     <a href="<%= it.href %>" <%- active === it.key ? 'aria-current="page"' : '' %>>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><%- iconos[it.key] %></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><%- iconos[it.key] %></svg>
       <span><%= it.titulo %></span>
     </a>
   <% }) %>

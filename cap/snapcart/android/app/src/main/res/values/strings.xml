@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">snapCart!</string>
+    <string name="title_activity_main">snapCart!</string>
+    <string name="package_name">com.snapcart.hack</string>
+    <string name="custom_url_scheme">com.snapcart.hack</string>
+</resources>

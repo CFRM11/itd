@@ -4,6 +4,11 @@
   --topbar-h: 3.25rem;
   --bottomnav-h: 3.5rem;
   --line: var(--pico-muted-border-color);
+
+  /* Paleta del diseño nuevo (htmls.zip) */
+  --pico-background-color: #150e10; /* negro: barras superior/inferior */
+  --pico-muted-color: #77888c;      /* gris-claro: texto secundario */
+  --pico-muted-border-color: #393849; /* azul-gris: separadores */
 }
 
 html, body { height: 100%; }
@@ -14,6 +19,7 @@ body.app {
   height: 100dvh;
   margin: 0;
   overflow: hidden;
+  background: #272739; /* azul-negro: fondo del contenido */
 }
 
 /* ---------- Barra superior ---------- */
@@ -52,69 +58,17 @@ body.app {
 }
 
 /* ---------- Contenido ---------- */
-main.main-page,
-main.main-swipe {
+main.main-page {
   flex: 1;
   min-height: 0;
   padding: 0;
+  overflow-y: auto;
 }
-main.main-page { overflow-y: auto; }
-main.main-swipe { display: flex; flex-direction: column; overflow: hidden; }
 
-.page,
-.panel-inner {
+.page {
   max-width: 40rem;
   margin: 0 auto;
   padding: 1rem;
-}
-
-/* ---------- Pestañas de la sección ---------- */
-.tabs {
-  flex: none;
-  position: relative;
-  display: flex;
-  border-bottom: 1px solid var(--line);
-}
-.tabs a {
-  flex: 1;
-  min-width: 0;
-  padding: 0.7rem 0.25rem;
-  text-align: center;
-  font-size: 0.85rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  text-decoration: none;
-  color: var(--pico-muted-color);
-}
-.tabs a[aria-current="page"] { color: var(--pico-color); font-weight: 600; }
-.tabs-indicator {
-  position: absolute;
-  left: 0;
-  bottom: -1px;
-  width: calc(100% / var(--n));
-  height: 2px;
-  background: var(--pico-color);
-  will-change: transform;
-}
-
-/* ---------- Paneles deslizables (solo dentro de la sección) ---------- */
-.swipe {
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-snap-type: x mandatory;
-  overscroll-behavior-x: contain; /* el gesto no "se escapa" a otra página */
-  scrollbar-width: none;
-}
-.swipe::-webkit-scrollbar { display: none; }
-.panel {
-  flex: 0 0 100%;
-  overflow-y: auto;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
 }
 
 /* ---------- Barra de navegación inferior ---------- */
@@ -141,7 +95,6 @@ main.main-swipe { display: flex; flex-direction: column; overflow: hidden; }
 }
 .bottomnav svg { width: 1.6rem; height: 1.6rem; }
 .bottomnav a[aria-current="page"] { color: var(--pico-color); font-weight: 600; }
-.bottomnav a[aria-current="page"] svg { stroke-width: 2.4; }
 
 /* ---------- Inventario: tarjetas ---------- */
 .cards {

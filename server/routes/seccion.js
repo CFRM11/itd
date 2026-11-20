@@ -1,17 +1,16 @@
 const { Router } = require('express');
 
-// Router de una sección: todas sus subpáginas se pintan como paneles deslizables
-// en una sola vista; la ruta solo decide en qué panel se abre.
+// Router de una sección: cada subpágina es su propia pantalla, enlazada
+// directo desde la barra inferior (ver partials/nav.ejs).
 module.exports = function crearSeccion(key, seccion) {
   const router = Router();
 
-  const render = (index) => (req, res) => {
-    const actual = seccion.paginas[index];
-    res.render('seccion', { title: actual.titulo, active: key, key, seccion, index, mainClass: 'main-swipe' });
+  const render = (pagina) => (req, res) => {
+    res.render('seccion', { title: pagina.titulo, active: pagina.slug, key, seccion, pagina, mainClass: 'main-page' });
   };
 
-  router.get('/', render(0));
-  seccion.paginas.forEach((pagina, i) => router.get(`/${pagina.slug}`, render(i)));
+  router.get('/', render(seccion.paginas[0]));
+  seccion.paginas.forEach((pagina) => router.get(`/${pagina.slug}`, render(pagina)));
 
   return router;
 };

@@ -1,25 +1,11 @@
 <%- include('partials/head') %>
 
-<nav class="tabs" aria-label="<%= seccion.titulo %>" style="--n: <%= seccion.paginas.length %>">
-  <% seccion.paginas.forEach((p, i) => { %>
-    <a href="<%= seccion.base %>/<%= p.slug %>" <%- i === index ? 'aria-current="page"' : '' %>><%= p.corto %></a>
-  <% }) %>
-  <span class="tabs-indicator" style="transform: translateX(<%= index * 100 %>%)" aria-hidden="true"></span>
-</nav>
-
-<div class="swipe" data-swipe data-start="<%= index %>" data-site="<%= siteName %>">
-  <% seccion.paginas.forEach((p) => { %>
-    <section class="panel" data-url="<%= seccion.base %>/<%= p.slug %>" data-title="<%= p.titulo %>"
-      aria-label="<%= p.titulo %>">
-      <div class="panel-inner">
-        <hgroup>
-          <h1><%= p.titulo %></h1>
-          <p><%= p.descripcion %></p>
-        </hgroup>
-        <%- include(`${key}/${p.slug}`) %>
-      </div>
-    </section>
-  <% }) %>
+<div class="page">
+  <hgroup>
+    <h1><%= pagina.titulo %></h1>
+    <p><%= pagina.descripcion %></p>
+  </hgroup>
+  <%- include(`${key}/${pagina.slug}`) %>
 </div>
 
 <%- include('partials/footer') %>
